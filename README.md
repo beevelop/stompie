@@ -16,7 +16,7 @@ bower install -save stompie
 ```html
 <script src="/bower_components/sockjs/sockjs.min.js"></script>
 <script src="/bower_components/stomp-websocket/lib/stomp.min.js"></script>
-<script src="/bower_components/stompie/stompie-min.js"></script>
+<script src="/bower_components/stompie/stompie.min.js"></script>
 ```
 
 1. Declare the module as a dependency in your application:
@@ -49,7 +49,12 @@ $stompie.using('/your/stomp/endpoint', function () {
     subscription.unsubscribe();
 
     // Send messages to a STOMP broker.
-    $stompie.send('/some/queue', {message: 'some message'});
+    $stompie.send('/some/queue', {
+        message: 'some message'
+    }, {
+        priority: 9,
+        'custom': 42 //Custom Headers
+    });
 
     // Disconnect from the socket.
     $stompie.disconnect(function () {

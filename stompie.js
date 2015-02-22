@@ -1,5 +1,5 @@
 /**
- * Stompie 0.0.5
+ * Stompie 0.0.6
  *
  * Angular module for managing connection and subscribing to STOMP queues.
  *
@@ -114,12 +114,11 @@ angular.module('stompie', [])
          * @param priority
          * @returns {_stompie}
          */
-        _stompie.send = function (queue, obj, priority) {
+        _stompie.send = function (queue, obj, headers) {
             try {
                 var json = JSON.stringify(obj);
-                _socket.stomp.send(queue, {
-                    priority: (priority !== undefined ? priority : 9)
-                }, json);
+                headers = headers || {};
+                _socket.stomp.send(queue, headers, json);
             } catch (e) {
                 throw e;
             }
