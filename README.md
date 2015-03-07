@@ -1,17 +1,17 @@
 # Stompie
 
 If you're planning to [stomp](http://jmesnil.net/stomp-websocket/doc/) all over some [sockets](https://github.com/sockjs/sockjs-client) this little [angularity](https://angularjs.org) to deal with STOMP queues is
-just the thing for you. On the [big iron](http://en.wikipedia.org/wiki/Big_iron), server side, we're using [Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/websocket.html#websocket-stomp-enable).
+just the thing for you.
 
 ## Getting started
 
-1. If you're using bower just install:
+1. Install via Bower:
 
 ```bash
-bower install -save stompie
+bower install -save beevelop/stompie
 ```
 
-1. OK I know it's obvious but add `<script>` tags to the module and the two required dependencies:
+2. Add SockJS + STOMP + (minified) Stompie:
 
 ```html
 <script src="/bower_components/sockjs/sockjs.min.js"></script>
@@ -19,13 +19,13 @@ bower install -save stompie
 <script src="/bower_components/stompie/stompie.min.js"></script>
 ```
 
-1. Declare the module as a dependency in your application:
+3. Declare the module as a dependency in your application:
 
 ```js
 angular.module('yourApplication', ['stompie']);
 ```
 
-1. Inject it in your controller:
+4. Inject it in your controller:
 
 ```js
 angular.module('yourApplication')
@@ -34,11 +34,11 @@ angular.module('yourApplication')
     }
 ```
 
-1. Use and subscribe:
+5. Use and subscribe:
 
 ```js
-$stompie.using('/your/stomp/endpoint', function () {
-
+//frame = CONNECTED headers
+$stompie.using('/your/stomp/endpoint', function (frame) {
     // The $scope bindings are updated for you so no need to $scope.$apply.
     // The subscription object is returned by the method.
     var subscription = $stompie.subscribe('/your/topic', function (data) {
@@ -60,7 +60,6 @@ $stompie.using('/your/stomp/endpoint', function () {
     $stompie.disconnect(function () {
         // Called once you're out...
     });
-
 });
 ```
 
@@ -70,10 +69,3 @@ $stompie.using('/your/stomp/endpoint', function () {
 * The underlying libraries also mean that you can register multiple subscribers.
 * The `$stompie.subscribe()` callback will attempt to parse the response.
 * Objects you pass to `$stompie.send()` will be stringified.
-
-> Bedtime reading:
-> * https://github.com/sockjs/sockjs-client
-> * http://jmesnil.net/stomp-websocket/doc/
-> * https://github.com/jmesnil/stomp-websocket/
-
-For everything else, there's [MasterCard](http://en.wikipedia.org/wiki/MasterCard#Advertising).

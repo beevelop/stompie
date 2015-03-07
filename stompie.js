@@ -1,5 +1,5 @@
 /**
- * Stompie 0.0.6
+ * Stompie 0.0.7
  *
  * Angular module for managing connection and subscribing to STOMP queues.
  *
@@ -43,10 +43,10 @@ angular.module('stompie', [])
          *
          * @private
          */
-        var _ready = function () {
+        var _ready = function (frame) {
             $rootScope.$apply(function () {
                 for (var i = 0; i < _init_callbacks.length; i++) {
-                    _init_callbacks[i]();
+                    _init_callbacks[i](frame);
                 }
             });
         };
@@ -72,7 +72,7 @@ angular.module('stompie', [])
          * @param callback
          */
         _stompie.using = function (endpoint, callback) {
-            if (_endpoint === null || endpoint != _endpoint) {
+            if (_endpoint === null || endpoint !== _endpoint) {
                 _stompie._connect(endpoint, callback);
             } else {
                 _init_callbacks.push(callback);
