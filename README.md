@@ -3,30 +3,28 @@
 If you're planning to [stomp](http://jmesnil.net/stomp-websocket/doc/) all over some [sockets](https://github.com/sockjs/sockjs-client) this little [angularity](https://angularjs.org) to deal with STOMP queues is
 just the thing for you.
 
-## Getting started
+## Installation
 
-1. Install via Bower:
-
+Install via Bower:
 ```bash
 bower install -save beevelop/stompie
 ```
 
-2. Add SockJS + STOMP + (minified) Stompie:
-
+Add SockJS + STOMP + (minified) Stompie:
 ```html
 <script src="/bower_components/sockjs/sockjs.min.js"></script>
 <script src="/bower_components/stomp-websocket/lib/stomp.min.js"></script>
 <script src="/bower_components/stompie/stompie.min.js"></script>
 ```
 
-3. Declare the module as a dependency in your application:
-
+Declare the module as a dependency in your application:
 ```js
 angular.module('yourApplication', ['stompie']);
 ```
 
-4. Inject it in your controller:
+## Usage
 
+Inject it in your controller:
 ```js
 angular.module('yourApplication')
     .controller('YourCtrl', ['$stompie', '$scope', function ($stompie, $scope) {
@@ -34,8 +32,7 @@ angular.module('yourApplication')
     }
 ```
 
-5. Use and subscribe:
-
+Use and subscribe:
 ```js
 //frame = CONNECTED headers
 $stompie.using('/your/stomp/endpoint', function (frame) {
@@ -53,7 +50,7 @@ $stompie.using('/your/stomp/endpoint', function (frame) {
         message: 'some message'
     }, {
         priority: 9,
-        'custom': 42 //Custom Headers
+        custom: 42 //Custom Headers
     });
 
     // Disconnect from the socket.
