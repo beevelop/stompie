@@ -1,100 +1,38 @@
 /**
- * Stompie 0.0.7
- *
- * Angular module for managing connection and subscribing to STOMP queues.
- *
+ * Stompie 0.0.8
+ * Angular module for managing connection and subscribing to STOMP
  * @author mrolafsson
  */
 angular.module('stompie', [])
-    .factory('$stompie', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
-        'use strict';
+    .factory('$stompie', [
+        '$rootScope', '$timeout',
+        function ($rootScope, $timeout) {
 
         var _stompie = {},
             _endpoint = null,
-            _init_callbacks = [],
             _socket = {};
 
-        /**
-         * Creates a connection to the server.
-         *
-         * @private
-         */
-        var _init = function () {
-            if (_endpoint !== null) {
-                _socket.client = new SockJS(_endpoint);
-                _socket.stomp = Stomp.over(_socket.client);
-                _socket.stomp.connect({}, _ready, _reconnect);
-            }
-        };
-
-        /**
-         * Periodically attempts reconnect if the connection is closed.
-         *
-         * @private
-         */
-        var _reconnect = function () {
+        var onError = function () {
             $timeout(function () {
-                _init();
+                using(_endpoint, _onConnect);
             }, 3000);
         };
 
-        /**
-         * Invoke all initialisation callbacks provided once the server connects.
-         *
-         * @private
-         */
-        var _ready = function (frame) {
-            $rootScope.$apply(function () {
-                for (var i = 0; i < _init_callbacks.length; i++) {
-                    _init_callbacks[i](frame);
-                }
-            });
-        };
-
-        /**
-         * Initiate a new connection to a STOMP server. You should be using the using() method (pun intended).
-         *
-         * @param endpoint
-         * @param callback
-         * @private
-         */
-        _stompie._connect = function (endpoint, callback) {
+        _stompie.connect = function (endpoint, onConnect, headers) {
             _endpoint = endpoint;
-            _init();
-            _init_callbacks.push(callback);
+            _onConnect = onConnect;
+
+            headers = headers || {};
+
+            _socket.client = new SockJS(_endpoint);
+            _socket.stomp = Stomp.over(_socket.client);
+            _socket.stomp.connect(headers, onConnect, onError);
         };
 
-        /**
-         * Use and create a connection if one is not already present.
-         * TODO At present it will only allow connections to a single endpoint.
-         *
-         * @param endpoint
-         * @param callback
-         */
-        _stompie.using = function (endpoint, callback) {
-            if (_endpoint === null || endpoint !== _endpoint) {
-                _stompie._connect(endpoint, callback);
-            } else {
-                _init_callbacks.push(callback);
-            }
-        };
-
-        /**
-         * Disconnect the socket, obviously terminating all subscriptions.
-         *
-         * @param callback
-         */
         _stompie.disconnect = function (callback) {
             _socket.stomp.disconnect(callback);
         };
 
-        /**
-         * Subscribe to a given channel with the callback provided.
-         *
-         * @param channel
-         * @param callback
-         * @returns subscription with which you can unsubscribe.
-         */
         _stompie.subscribe = function (channel, callback) {
             return _socket.stomp.subscribe(channel, function (data) {
                 var payload = null;
@@ -106,14 +44,6 @@ angular.module('stompie', [])
             });
         };
 
-        /**
-         * If application prefixes are set on the STOMP server you need to specify that in the queue parameter.
-         *
-         * @param queue
-         * @param obj
-         * @param priority
-         * @returns {_stompie}
-         */
         _stompie.send = function (queue, obj, headers) {
             try {
                 var json = JSON.stringify(obj);
@@ -127,4 +57,5 @@ angular.module('stompie', [])
         };
 
         return _stompie;
-    }]);
+    }]
+);
